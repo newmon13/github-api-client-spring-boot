@@ -2,8 +2,8 @@
 
 ![Java](https://img.shields.io/badge/Java-21-brightgreen)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.3-green)
-[![Maven Central](https://img.shields.io/maven-central/v/com.example/your-artifact-id.svg)](https://search.maven.org/artifact/com.example/your-artifact-id)
-![Swagger](https://img.shields.io/swagger/valid/3.0)
+![Maven](https://img.shields.io/badge/Maven-C71A36?logo=apachemaven)
+![Swagger](https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=black)
 
 ## Table of Contents
 
