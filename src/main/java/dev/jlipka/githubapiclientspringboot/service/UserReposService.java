@@ -2,11 +2,14 @@ package dev.jlipka.githubapiclientspringboot.service;
 
 import dev.jlipka.githubapiclientspringboot.dto.github.GithubBranch;
 import dev.jlipka.githubapiclientspringboot.dto.github.GithubRepository;
+import dev.jlipka.githubapiclientspringboot.error.UserNotFoundException;
 import dev.jlipka.githubapiclientspringboot.mapper.GithubMapper;
 import dev.jlipka.githubapiclientspringboot.model.Branch;
 import dev.jlipka.githubapiclientspringboot.model.Repository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
@@ -24,20 +27,23 @@ public class UserReposService {
     private final GithubMapper githubMapper;
 
     public List<Repository> getUserRepositories(String username) {
-        List<Repository> resultRepositories = new ArrayList<>();
+        try {
+            List<Repository> resultRepositories = new ArrayList<>();
+            GithubRepository[] githubRepositories = fetchUserRepositories(username);
 
-        GithubRepository[] githubRepositories = fetchUserRepositories(username);
+            for (GithubRepository githubRepository : githubRepositories) {
+                List<Branch> branches = Arrays.stream(fetchRepositoryBranches(username, githubRepository.name()))
+                        .map(githubMapper::mapToBranch)
+                        .toList();
 
-        for (GithubRepository githubRepository : githubRepositories) {
-            List<Branch> branches = Arrays.stream(fetchRepositoryBranches(username, githubRepository.name()))
-                    .map(githubMapper::mapToBranch)
-                    .toList();
+                Repository repository = githubMapper.mapToRepository(githubRepository, branches);
+                resultRepositories.add(repository);
+            }
 
-            Repository repository = githubMapper.mapToRepository(githubRepository, branches);
-            resultRepositories.add(repository);
+            return resultRepositories;
+        } catch (HttpClientErrorException.NotFound e) {
+            throw new UserNotFoundException("Could not find github user with given username");
         }
-
-        return resultRepositories;
     }
 
     private GithubRepository[] fetchUserRepositories(String username) {
