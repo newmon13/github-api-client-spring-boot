@@ -38,7 +38,7 @@ class UserReposControllerTest {
     public void shouldFailAndReturn404StatusAndUserDoesNotExist() throws Exception {
         mockMvc.perform(get("/github/hfghfhdthdthdhdfhdfhdfgdgf").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status", is("NOT_FOUND")))
+                .andExpect(jsonPath("$.status", is(404)))
                 .andExpect(jsonPath("$.message", is("Could not find github user with given username")));
     }
 
