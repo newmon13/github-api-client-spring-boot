@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-21-brightgreen)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.3-green)
-![Maven](https://img.shields.io/maven-metadata/v)
+![Maven]([https://img.shields.io/maven-metadata/v](https://img.shields.io/maven-central/last-update/:groupId/:artifactId)
 ![Swagger](https://img.shields.io/swagger/valid/3.0)
 
 ## Table of Contents
