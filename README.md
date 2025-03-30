@@ -2,7 +2,7 @@
 
 ![Java](https://img.shields.io/badge/Java-21-brightgreen)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.3-green)
-![Maven Central Version](https://img.shields.io/maven-central/v/:groupId/:artifactId)
+[![Maven Central](https://img.shields.io/maven-central/v/com.example/your-artifact-id.svg)](https://search.maven.org/artifact/com.example/your-artifact-id)
 ![Swagger](https://img.shields.io/swagger/valid/3.0)
 
 ## Table of Contents
