@@ -2,6 +2,8 @@ package dev.jlipka.githubapiclientspringboot.service;
 
 import dev.jlipka.githubapiclientspringboot.dto.github.GithubBranch;
 import dev.jlipka.githubapiclientspringboot.dto.github.GithubRepository;
+import dev.jlipka.githubapiclientspringboot.mapper.GithubMapper;
+import dev.jlipka.githubapiclientspringboot.model.Branch;
 import dev.jlipka.githubapiclientspringboot.model.Repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,23 +21,23 @@ public class UserReposService {
 
     private final RestClient restClient;
 
+    private final GithubMapper githubMapper;
+
     public List<Repository> getUserRepositories(String username) {
-        List<Repository> completeRepositories = new ArrayList<>();
-        GithubRepository[] repositories = fetchUserRepositories(username);
+        List<Repository> resultRepositories = new ArrayList<>();
 
-        for (GithubRepository repository : repositories) {
-            GithubBranch[] branches = fetchRepositoryBranches(username, repository.name());
+        GithubRepository[] githubRepositories = fetchUserRepositories(username);
 
-            Repository completeRepository = new Repository(
-                    repository.name(),
-                    repository.owner().login(),
-                    Arrays.asList(branches)
-            );
+        for (GithubRepository githubRepository : githubRepositories) {
+            List<Branch> branches = Arrays.stream(fetchRepositoryBranches(username, githubRepository.name()))
+                    .map(githubMapper::mapToBranch)
+                    .toList();
 
-            completeRepositories.add(completeRepository);
+            Repository repository = githubMapper.mapToRepository(githubRepository, branches);
+            resultRepositories.add(repository);
         }
 
-        return completeRepositories;
+        return resultRepositories;
     }
 
     private GithubRepository[] fetchUserRepositories(String username) {
