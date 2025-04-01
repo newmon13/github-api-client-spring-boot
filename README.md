@@ -27,6 +27,9 @@ Core functionality:
 - Java 19
 - Spring Boot
 - Maven
+- Junit 5
+- AssertJ
+- WireMock
 
 ## Getting Started
 
