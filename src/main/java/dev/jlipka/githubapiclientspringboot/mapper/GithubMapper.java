@@ -1,7 +1,7 @@
 package dev.jlipka.githubapiclientspringboot.mapper;
 
-import dev.jlipka.githubapiclientspringboot.dto.github.GithubBranch;
-import dev.jlipka.githubapiclientspringboot.dto.github.GithubRepository;
+import dev.jlipka.githubapiclientspringboot.client.dto.GithubBranch;
+import dev.jlipka.githubapiclientspringboot.client.dto.GithubRepository;
 import dev.jlipka.githubapiclientspringboot.model.Branch;
 import dev.jlipka.githubapiclientspringboot.model.Repository;
 import org.mapstruct.Mapper;
