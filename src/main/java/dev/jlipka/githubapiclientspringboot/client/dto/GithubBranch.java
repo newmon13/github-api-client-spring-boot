@@ -1,10 +1,10 @@
-package dev.jlipka.githubapiclientspringboot.dto.github;
+package dev.jlipka.githubapiclientspringboot.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record GithubRepository(
+public record GithubBranch(
         String name,
-        GithubOwner owner
+        GithubCommit commit
 ) {
 }
