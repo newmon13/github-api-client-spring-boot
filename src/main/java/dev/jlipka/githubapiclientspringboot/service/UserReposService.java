@@ -1,16 +1,14 @@
 package dev.jlipka.githubapiclientspringboot.service;
 
-import dev.jlipka.githubapiclientspringboot.dto.github.GithubBranch;
-import dev.jlipka.githubapiclientspringboot.dto.github.GithubRepository;
+import dev.jlipka.githubapiclientspringboot.client.GithubClient;
+import dev.jlipka.githubapiclientspringboot.client.dto.GithubRepository;
 import dev.jlipka.githubapiclientspringboot.error.UserNotFoundException;
 import dev.jlipka.githubapiclientspringboot.mapper.GithubMapper;
 import dev.jlipka.githubapiclientspringboot.model.Branch;
 import dev.jlipka.githubapiclientspringboot.model.Repository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,43 +18,33 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserReposService {
 
-    private static final String GITHUB_API_URL = "https://api.github.com";
-
-    private final RestClient restClient;
-
     private final GithubMapper githubMapper;
+    private final GithubClient githubClient;
 
-    public List<Repository> getUserRepositories(String username) {
+    public List<Repository> getUserNonForkRepositories(String username) {
+        List<Repository> resultList = new ArrayList<>();
         try {
-            List<Repository> resultRepositories = new ArrayList<>();
-            GithubRepository[] githubRepositories = fetchUserRepositories(username);
+            List<GithubRepository> nonForkGithubRepositories = getNonForkGithubRepositories(username);
 
-            for (GithubRepository githubRepository : githubRepositories) {
-                List<Branch> branches = Arrays.stream(fetchRepositoryBranches(username, githubRepository.name()))
+            for (GithubRepository githubRepository : nonForkGithubRepositories) {
+                List<Branch> branches = Arrays.stream(githubClient.fetchRepositoryBranches(username, githubRepository.name()))
                         .map(githubMapper::mapToBranch)
                         .toList();
 
                 Repository repository = githubMapper.mapToRepository(githubRepository, branches);
-                resultRepositories.add(repository);
+                resultList.add(repository);
             }
 
-            return resultRepositories;
+            return resultList;
         } catch (HttpClientErrorException.NotFound e) {
             throw new UserNotFoundException("Could not find github user with given username");
         }
     }
 
-    private GithubRepository[] fetchUserRepositories(String username) {
-        return restClient.get()
-                .uri(GITHUB_API_URL + "/users/" + username + "/repos")
-                .retrieve()
-                .body(GithubRepository[].class);
-    }
-
-    private GithubBranch[] fetchRepositoryBranches(String username, String repositoryName) {
-        return restClient.get()
-                .uri(GITHUB_API_URL + "/repos/" + username + "/" + repositoryName + "/branches")
-                .retrieve()
-                .body(GithubBranch[].class);
+    private List<GithubRepository> getNonForkGithubRepositories(String username) {
+        List<GithubRepository> githubRepositories = Arrays.asList(githubClient.fetchUserRepositories(username));
+        return githubRepositories.stream()
+                .filter(githubRepository -> !githubRepository.isFork())
+                .toList();
     }
 }
