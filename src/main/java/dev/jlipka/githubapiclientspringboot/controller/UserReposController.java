@@ -15,10 +15,10 @@ import java.util.List;
 public class UserReposController {
     private final UserReposService userReposService;
 
-    @GetMapping("github/{username}")
+    @GetMapping("github/users/{username}")
     public ResponseEntity<List<Repository>> getUserRepositories(
             @PathVariable String username
     ) {
-        return ResponseEntity.ok(userReposService.getUserRepositories(username));
+        return ResponseEntity.ok(userReposService.getUserNonForkRepositories(username));
     }
 }
