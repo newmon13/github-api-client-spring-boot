@@ -1,4 +1,4 @@
-package dev.jlipka.githubapiclientspringboot.error;
+package dev.jlipka.githubapiclientspringboot.consumer.error;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;

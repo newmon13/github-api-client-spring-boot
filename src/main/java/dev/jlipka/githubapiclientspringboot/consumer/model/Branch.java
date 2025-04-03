@@ -1,4 +1,4 @@
-package dev.jlipka.githubapiclientspringboot.model;
+package dev.jlipka.githubapiclientspringboot.consumer.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
