@@ -1,9 +1,9 @@
-package dev.jlipka.githubapiclientspringboot.mapper;
+package dev.jlipka.githubapiclientspringboot.consumer;
 
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubBranch;
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubRepository;
-import dev.jlipka.githubapiclientspringboot.model.Branch;
-import dev.jlipka.githubapiclientspringboot.model.Repository;
+import dev.jlipka.githubapiclientspringboot.consumer.model.Branch;
+import dev.jlipka.githubapiclientspringboot.consumer.model.Repository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -16,4 +16,6 @@ public interface GithubMapper {
 
     @Mapping(source = "githubRepository.owner.login", target = "owner")
     Repository mapToRepository(GithubRepository githubRepository, List<Branch> branches);
+
+    RepositoryDto mapToRepositoryDto(Repository repository);
 }

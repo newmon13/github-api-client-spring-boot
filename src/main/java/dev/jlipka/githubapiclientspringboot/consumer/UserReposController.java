@@ -1,7 +1,5 @@
-package dev.jlipka.githubapiclientspringboot.controller;
+package dev.jlipka.githubapiclientspringboot.consumer;
 
-import dev.jlipka.githubapiclientspringboot.model.Repository;
-import dev.jlipka.githubapiclientspringboot.service.UserReposService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +14,7 @@ public class UserReposController {
     private final UserReposService userReposService;
 
     @GetMapping("github/users/{username}")
-    public ResponseEntity<List<Repository>> getUserRepositories(
-            @PathVariable String username
-    ) {
-        return ResponseEntity.ok(userReposService.getUserNonForkRepositories(username));
+    public ResponseEntity<List<RepositoryDto>> getUserNonForkRepositories(@PathVariable String username) {
+        return ResponseEntity.ok(userReposService.getUserRepositories(username, false));
     }
 }

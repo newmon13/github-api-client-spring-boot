@@ -8,9 +8,11 @@ import dev.jlipka.githubapiclientspringboot.client.dto.GithubBranch;
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubCommit;
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubOwner;
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubRepository;
-import dev.jlipka.githubapiclientspringboot.error.UserNotFoundException;
-import dev.jlipka.githubapiclientspringboot.model.Repository;
+import dev.jlipka.githubapiclientspringboot.consumer.RepositoryDto;
+import dev.jlipka.githubapiclientspringboot.consumer.UserReposService;
+import dev.jlipka.githubapiclientspringboot.consumer.error.UserNotFoundException;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -42,7 +44,7 @@ class UserReposServiceIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void getUserNonForkRepositories_ShouldReturnOnlyNonForkRepositories_WhenUserExists() {
+    void getUserNonForkRepositories_ShouldReturnRepositories_WhenUserExists() {
         //given
         JsonNode reposResponseBody = getExampleGithubRepositoriesJson();
         JsonNode branchesResponseBody = getExampleGithubRepositoryBranchesJson();
@@ -56,7 +58,7 @@ class UserReposServiceIntegrationTest {
                 .withJsonBody(branchesResponseBody)));
 
         // when
-        List<Repository> userRepositories = userReposService.getUserNonForkRepositories(TEST_USERNAME);
+        List<RepositoryDto> userRepositories = userReposService.getUserRepositories(TEST_USERNAME, false);
 
         // then
         assertAll(() -> assertThat(userRepositories).isNotNull(), () -> assertThat(userRepositories).isNotEmpty(), () -> assertThat(userRepositories.size()).isEqualTo(1), () -> assertThat(userRepositories.get(0)
@@ -70,7 +72,7 @@ class UserReposServiceIntegrationTest {
 
         //when & then
         assertThrows(UserNotFoundException.class, () -> {
-            userReposService.getUserNonForkRepositories(TEST_USERNAME);
+            userReposService.getUserRepositories(TEST_USERNAME, ArgumentMatchers.any());
         });
     }
 
