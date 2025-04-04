@@ -21,6 +21,7 @@ A Github API client that lists github repositories of user and their brainches.
 Core functionality:
 - ✅ Extracting user repositories and their branches
 - ✅ Edge cases validation
+- ✅ Enhanced resilience against GitHub API failures
 
 ## Technologies
 
