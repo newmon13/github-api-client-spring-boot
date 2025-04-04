@@ -2,17 +2,18 @@ package dev.jlipka.githubapiclientspringboot.client;
 
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubBranch;
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 @Component
+@Slf4j
 public class GithubClient {
 
+    private final RestClient restClient;
     @Value("${github.url}")
     private String GITHUB_API_URL;
-
-    private final RestClient restClient;
 
     public GithubClient(RestClient restClient) {
         this.restClient = restClient;

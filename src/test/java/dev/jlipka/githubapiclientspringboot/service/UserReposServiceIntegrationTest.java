@@ -2,6 +2,7 @@ package dev.jlipka.githubapiclientspringboot.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.http.Fault;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubBranch;
@@ -10,10 +11,12 @@ import dev.jlipka.githubapiclientspringboot.client.dto.GithubOwner;
 import dev.jlipka.githubapiclientspringboot.client.dto.GithubRepository;
 import dev.jlipka.githubapiclientspringboot.consumer.RepositoryDto;
 import dev.jlipka.githubapiclientspringboot.consumer.UserReposService;
+import dev.jlipka.githubapiclientspringboot.consumer.error.ExternalApiException;
 import dev.jlipka.githubapiclientspringboot.consumer.error.UserNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -65,20 +68,30 @@ class UserReposServiceIntegrationTest {
         verify(getRequestedFor(reposUrlPattern));
         verify(getRequestedFor(branchesUrlPattern));
 
-        assertAll(() -> assertThat(userRepositories).isNotNull(),
-                () -> assertThat(userRepositories).isNotEmpty(),
-                () -> assertThat(userRepositories.size()).isEqualTo(1),
-                () -> assertThat(userRepositories.get(0).name()).isEqualTo("non-fork-repository"));
+        assertAll(() -> assertThat(userRepositories).isNotNull(), () -> assertThat(userRepositories).isNotEmpty(), () -> assertThat(userRepositories.size()).isEqualTo(1), () -> assertThat(userRepositories.get(0)
+                .name()).isEqualTo("non-fork-repository"));
     }
 
     @Test
-    void getUserNonForkRepositories_ShouldThrowException_WhenUserDoesNotExist() {
+    void getUserNonForkRepositories_ShouldThrowUserNotFoundException_WhenUserDoesNotExist() {
         //given
         stubFor(get(reposUrlPattern).willReturn(aResponse().withStatus(404)));
 
         //when & then
         assertThrows(UserNotFoundException.class, () -> userReposService.getUserRepositories(TEST_USERNAME, true));
 
+        verify(getRequestedFor(reposUrlPattern));
+    }
+
+    @Test
+    void getUserNonForkRepositories_ShouldThrowExternalApiException_WhenConnectionWithGithubApiCrashed() {
+        // given
+        stubFor(get(reposUrlPattern).willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER)));
+
+        // when & then
+        ExternalApiException exception = assertThrows(ExternalApiException.class, () -> userReposService.getUserRepositories(TEST_USERNAME, true));
+
+        assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.SERVICE_UNAVAILABLE);
         verify(getRequestedFor(reposUrlPattern));
     }
 
