@@ -1,4 +1,4 @@
-# Bank Entity Extraction API
+# Github API Client
 
 ![Java](https://img.shields.io/badge/Java-21-brightgreen)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.3-green)
