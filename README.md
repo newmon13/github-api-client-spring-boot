@@ -14,7 +14,7 @@
 
 ## About
 
-A Github API client that lists github repositories of user and their brainches.
+A Github API client that lists non-fork github repositories and their brainches for specified user.
 
 ## Features
 
