@@ -25,7 +25,7 @@ Core functionality:
 
 ## Technologies
 
-- Java 19
+- Java 21
 - Spring Boot
 - Maven
 - Junit 5
